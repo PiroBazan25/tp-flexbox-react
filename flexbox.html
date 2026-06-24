@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicio 1 - Flexbox</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f2f5;
+        }
+        
+        header {
+            margin-bottom: 20px;
+        }
+
+        .contenedor-tarjetas {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .tarjeta {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            width: 250px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .tarjeta:hover {
+            transform: scale(1.03);
+        }
+
+        .tarjeta.resaltada {
+            border: 2px solid #ff4757;
+            background-color: #ffeae8;
+        }
+
+        .btn-accion {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .btn-accion:hover {
+            background-color: #0056b3;
+        }
+
+        .volver {
+            display: inline-block;
+            margin-top: 20px;
+            color: #333;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Catálogo de Productos</h1>
+        <a href="index.html" class="volver">← Volver al Inicio</a>
+    </header>
+
+    <button id="btnFiltrar" class="btn-accion">Resaltar productos en oferta</button>
+
+    <main id="catalogo" class="contenedor-tarjetas"></main>
+
+    <script>
+        const productos = [
+            { id: 1, nombre: "Auriculares Bluetooth", precio: 45000, oferta: true },
+            { id: 2, nombre: "Teclado Mecánico", precio: 68000, oferta: false },
+            { id: 3, nombre: "Mouse Gamer", precio: 25000, oferta: true },
+            { id: 4, nombre: "Monitor 24 Pulgadas", precio: 185000, oferta: false },
+            { id: 5, nombre: "Silla Ergonómica", precio: 210000, oferta: false },
+            { id: 6, nombre: "Cargador Rápido", precio: 15000, oferta: true }
+        ];
+
+        const catalogo = document.getElementById("catalogo");
+        const btnFiltrar = document.getElementById("btnFiltrar");
+
+        function cargarProductos() {
+            catalogo.innerHTML = "";
+            productos.forEach(prod => {
+                const tarjeta = document.createElement("div");
+                tarjeta.classList.add("tarjeta");
+                tarjeta.id = `prod-${prod.id}`;
+                tarjeta.innerHTML = `
+                    <h3>${prod.nombre}</h3>
+                    <p>Precio: $${prod.precio}</p>
+                    <p>${prod.oferta ? "<strong>¡En Oferta!</strong>" : "Precio regular"}</p>
+                `;
+                catalogo.appendChild(tarjeta);
+            });
+        }
+
+        btnFiltrar.addEventListener("click", () => {
+            productos.forEach(prod => {
+                const tarjeta = document.getElementById(`prod-${prod.id}`);
+                if (prod.oferta) {
+                    tarjeta.classList.toggle("resaltada");
+                }
+            });
+        });
+
+        cargarProductos();
+    </script>
+
+</body>
+</html>
