@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicio 3 - Registro de Personas (React)</title>
+    
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f2f5;
+        }
+
+        header {
+            margin-bottom: 20px;
+        }
+
+        .formulario {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 400px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .campo-form {
+            margin-bottom: 15px;
+        }
+
+        .campo-form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .campo-form input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .btn-guardar {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        .btn-guardar:hover {
+            background-color: #218838;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #61dafb;
+            color: #333;
+        }
+
+        .btn-eliminar {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn-eliminar:hover {
+            background-color: #c82333;
+        }
+
+        .volver {
+            display: inline-block;
+            margin-top: 20px;
+            color: #333;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Registro de Personas con React</h1>
+        <a href="index.html" class="volver">← Volver al Inicio</a>
+    </header>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        function App() {
+            const [personas, setPersonas] = useState([]);
+            const [form, setForm] = useState({
+                nombre: '',
+                apellido: '',
+                edad: '',
+                altura: '',
+                peso: ''
+            });
+
+            const handleChange = (e) => {
+                setForm({
+                    ...form,
+                    [e.target.id]: e.target.value
+                });
+            };
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                
+                const alt = parseFloat(form.altura);
+                const pes = parseFloat(form.peso);
+                const imcCalculado = (pes / (alt * alt)).toFixed(2);
+
+                const nuevaPersona = {
+                    id: Date.now(),
+                    nombre: form.nombre,
+                    apellido: form.apellido,
+                    edad: form.edad,
+                    altura: alt,
+                    peso: pes,
+                    imc: imcCalculado
+                };
+
+                setPersonas([...personas, nuevaPersona]);
+                
+                setForm({
+                    nombre: '',
+                    apellido: '',
+                    edad: '',
+                    altura: '',
+                    peso: ''
+                });
+            };
+
+            const eliminarPersona = (id) => {
+                setPersonas(personas.filter(p => p.id !== id));
+            };
+
+            return (
+                <div>
+                    <form onSubmit={handleSubmit} className="formulario">
+                        <div className="campo-form">
+                            <label htmlFor="nombre">Nombre:</label>
+                            <input type="text" id="nombre" value={form.nombre} onChange={handleChange} required />
+                        </div>
+                        <div className="campo-form">
+                            <label htmlFor="apellido">Apellido:</label>
+                            <input type="text" id="apellido" value={form.apellido} onChange={handleChange} required />
+                        </div>
+                        <div className="campo-form">
+                            <label htmlFor="edad">Edad:</label>
+                            <input type="number" id="edad" value={form.edad} onChange={handleChange} required min="1" />
+                        </div>
+                        <div className="campo-form">
+                            <label htmlFor="altura">Altura (en metros, ej: 1.75):</label>
+                            <input type="number" id="altura" value={form.altura} onChange={handleChange} required step="0.01" min="0.5" max="2.5" />
+                        </div>
+                        <div className="campo-form">
+                            <label htmlFor="peso">Peso (en kg, ej: 70):</label>
+                            <input type="number" id="peso" value={form.peso} onChange={handleChange} required step="0.1" min="1" max="300" />
+                        </div>
+                        <button type="submit" className="btn-guardar">Agregar Persona</button>
+                    </form>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Apellido</th>
+                                <th>Edad</th>
+                                <th>Altura</th>
+                                <th>Peso</th>
+                                <th>IMC</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {personas.map(p => (
+                                <tr key={p.id}>
+                                    <td>{p.nombre}</td>
+                                    <td>{p.apellido}</td>
+                                    <td>{p.edad}</td>
+                                    <td>{p.altura} m</td>
+                                    <td>{p.peso} kg</td>
+                                    <td><strong>{p.imc}</strong></td>
+                                    <td>
+                                        <button className="btn-eliminar" onClick={() => eliminarPersona(p.id)}>
+                                            Eliminar
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+
+</body>
+</html>
