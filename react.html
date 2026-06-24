@@ -4,10 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ejercicio 3 - React</title>
-    
+
     <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
         body { font-family: Arial, sans-serif; padding: 20px; max-width: 900px; margin: auto; }
@@ -21,105 +20,132 @@
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
         th { background-color: #007bff; color: white; }
-        /* Estilos de filas alternadas */
         tr:nth-child(even) { background-color: #f9f9f9; }
     </style>
 </head>
 <body>
-    <a href="index.html" class="volver">← Volver al Inicio</a>
+    <a href="index.html" class="volver">Volver al Inicio</a>
     <h1>Ejercicio 3: Formulario y Tabla (React)</h1>
-    
+
     <div id="root"></div>
 
-    <script type="text/babel">
-        const { useState } = React;
+    <script>
+        const { createElement: h, useState } = React;
 
         function App() {
-            // Estados para la lista y el formulario
             const [personas, setPersonas] = useState([]);
-            const [form, setForm] = useState({ nombre: '', apellido: '', edad: '', altura: '', peso: '' });
+            const [form, setForm] = useState({
+                nombre: "",
+                apellido: "",
+                edad: "",
+                altura: "",
+                peso: ""
+            });
 
-            // Manejador del formulario
-            const handleChange = (e) => {
-                setForm({ ...form, [e.target.name]: e.target.value });
-            };
+            function handleChange(evento) {
+                setForm({
+                    ...form,
+                    [evento.target.name]: evento.target.value
+                });
+            }
 
-            // Cálculo del IMC
-            const calcularIMC = (peso, altura) => {
-                const p = parseFloat(peso);
-                const a = parseFloat(altura);
-                if (p > 0 && a > 0) {
-                    return (p / (a * a)).toFixed(2);
+            function calcularIMC(peso, altura) {
+                const pesoNumero = parseFloat(peso);
+                const alturaNumero = parseFloat(altura);
+
+                if (pesoNumero > 0 && alturaNumero > 0) {
+                    return (pesoNumero / (alturaNumero * alturaNumero)).toFixed(2);
                 }
-                return "0";
-            };
 
-            // Agregar a la tabla
-            const handleSubmit = (e) => {
-                e.preventDefault();
+                return "0";
+            }
+
+            function handleSubmit(evento) {
+                evento.preventDefault();
+
                 const nuevaPersona = {
                     id: Date.now(),
                     ...form,
                     imc: calcularIMC(form.peso, form.altura)
                 };
+
                 setPersonas([...personas, nuevaPersona]);
-                
-                // Limpiar inputs
-                setForm({ nombre: '', apellido: '', edad: '', altura: '', peso: '' });
-            };
+                setForm({
+                    nombre: "",
+                    apellido: "",
+                    edad: "",
+                    altura: "",
+                    peso: ""
+                });
+            }
 
-            // Eliminar fila
-            const eliminarPersona = (id) => {
-                setPersonas(personas.filter(persona => persona.id !== id));
-            };
+            function eliminarPersona(id) {
+                setPersonas(personas.filter((persona) => persona.id !== id));
+            }
 
-            return (
-                <div>
-                    <form onSubmit={handleSubmit}>
-                        <input type="text" name="nombre" value={form.nombre} onChange={handleChange} placeholder="Ej: Juan" required />
-                        <input type="text" name="apellido" value={form.apellido} onChange={handleChange} placeholder="Ej: Pérez" required />
-                        <input type="number" name="edad" value={form.edad} onChange={handleChange} placeholder="Edad" min="1" required />
-                        <input type="number" name="altura" value={form.altura} onChange={handleChange} placeholder="Altura en metros (Ej: 1.75)" step="0.01" min="0.1" required />
-                        <input type="number" name="peso" value={form.peso} onChange={handleChange} placeholder="Peso en kg (Ej: 75.5)" step="0.1" min="1" required />
-                        <button type="submit">Agregar Persona</button>
-                    </form>
-
-                    <h2>Listado de Registros Actuales</h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Apellido</th>
-                                <th>Edad</th>
-                                <th>Altura (m)</th>
-                                <th>Peso (kg)</th>
-                                <th>IMC</th>
-                                <th>Acción</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {personas.map((p) => (
-                                <tr key={p.id}>
-                                    <td>{p.nombre}</td>
-                                    <td>{p.apellido}</td>
-                                    <td>{p.edad}</td>
-                                    <td>{p.altura}</td>
-                                    <td>{p.peso}</td>
-                                    <td><strong>{p.imc}</strong></td>
-                                    <td>
-                                        <button className="btn-eliminar" onClick={() => eliminarPersona(p.id)}>Eliminar</button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+            return h(
+                "div",
+                null,
+                h(
+                    "form",
+                    { onSubmit: handleSubmit },
+                    h("input", { type: "text", name: "nombre", value: form.nombre, onChange: handleChange, placeholder: "Ej: Juan", required: true }),
+                    h("input", { type: "text", name: "apellido", value: form.apellido, onChange: handleChange, placeholder: "Ej: Perez", required: true }),
+                    h("input", { type: "number", name: "edad", value: form.edad, onChange: handleChange, placeholder: "Edad", min: "1", required: true }),
+                    h("input", { type: "number", name: "altura", value: form.altura, onChange: handleChange, placeholder: "Altura en metros (Ej: 1.75)", step: "0.01", min: "0.1", required: true }),
+                    h("input", { type: "number", name: "peso", value: form.peso, onChange: handleChange, placeholder: "Peso en kg (Ej: 75.5)", step: "0.1", min: "1", required: true }),
+                    h("button", { type: "submit" }, "Agregar Persona")
+                ),
+                h("h2", null, "Listado de Registros Actuales"),
+                h(
+                    "table",
+                    null,
+                    h(
+                        "thead",
+                        null,
+                        h(
+                            "tr",
+                            null,
+                            h("th", null, "Nombre"),
+                            h("th", null, "Apellido"),
+                            h("th", null, "Edad"),
+                            h("th", null, "Altura (m)"),
+                            h("th", null, "Peso (kg)"),
+                            h("th", null, "IMC"),
+                            h("th", null, "Accion")
+                        )
+                    ),
+                    h(
+                        "tbody",
+                        null,
+                        personas.map((persona) =>
+                            h(
+                                "tr",
+                                { key: persona.id },
+                                h("td", null, persona.nombre),
+                                h("td", null, persona.apellido),
+                                h("td", null, persona.edad),
+                                h("td", null, persona.altura),
+                                h("td", null, persona.peso),
+                                h("td", null, h("strong", null, persona.imc)),
+                                h(
+                                    "td",
+                                    null,
+                                    h(
+                                        "button",
+                                        { type: "button", className: "btn-eliminar", onClick: () => eliminarPersona(persona.id) },
+                                        "Eliminar"
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
             );
         }
 
-        // Renderizado
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+        const root = ReactDOM.createRoot(document.getElementById("root"));
+        root.render(h(App));
     </script>
 </body>
 </html>
