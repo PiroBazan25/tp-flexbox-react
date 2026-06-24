@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicio 2 - Registro de Personas (DOM)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f2f5;
+        }
+
+        header {
+            margin-bottom: 20px;
+        }
+
+        .formulario {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 400px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .campo-form {
+            margin-bottom: 15px;
+        }
+
+        .campo-form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .campo-form input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .btn-guardar {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        .btn-guardar:hover {
+            background-color: #218838;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007BFF;
+            color: white;
+        }
+
+        .btn-eliminar {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn-eliminar:hover {
+            background-color: #c82333;
+        }
+
+        .volver {
+            display: inline-block;
+            margin-top: 20px;
+            color: #333;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Registro de Personas e IMC</h1>
+        <a href="index.html" class="volver">← Volver al Inicio</a>
+    </header>
+
+    <form id="formPersona" class="formulario">
+        <div class="campo-form">
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" required>
+        </div>
+        <div class="campo-form">
+            <label for="apellido">Apellido:</label>
+            <input type="text" id="apellido" required>
+        </div>
+        <div class="campo-form">
+            <label for="edad">Edad:</label>
+            <input type="number" id="edad" required min="1">
+        </div>
+        <div class="campo-form">
+            <label for="altura">Altura (en metros, ej: 1.75):</label>
+            <input type="number" id="altura" required step="0.01" min="0.5" max="2.5">
+        </div>
+        <div class="campo-form">
+            <label for="peso">Peso (en kg, ej: 70):</label>
+            <input type="number" id="peso" required step="0.1" min="1" max="300">
+        </div>
+        <button type="submit" class="btn-guardar">Agregar Persona</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Edad</th>
+                <th>Altura</th>
+                <th>Peso</th>
+                <th>IMC</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="tablaCuerpo"></tbody>
+    </table>
+
+    <script>
+        const formPersona = document.getElementById("formPersona");
+        const tablaCuerpo = document.getElementById("tablaCuerpo");
+
+        formPersona.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            const nombre = document.getElementById("nombre").value;
+            const apellido = document.getElementById("apellido").value;
+            const edad = document.getElementById("edad").value;
+            const altura = parseFloat(document.getElementById("altura").value);
+            const peso = parseFloat(document.getElementById("peso").value);
+
+            const imc = (peso / (altura * altura)).toFixed(2);
+
+            const fila = document.createElement("tr");
+
+            fila.innerHTML = `
+                <td>${nombre}</td>
+                <td>${apellido}</td>
+                <td>${edad}</td>
+                <td>${altura} m</td>
+                <td>${peso} kg</td>
+                <td><strong>${imc}</strong></td>
+                <td><button class="btn-eliminar">Eliminar</button></td>
+            `;
+
+            fila.querySelector(".btn-eliminar").addEventListener("click", () => {
+                fila.remove();
+            });
+
+            tablaCuerpo.appendChild(fila);
+            formPersona.reset();
+        });
+    </script>
+
+</body>
+</html>
